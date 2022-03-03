@@ -3,6 +3,7 @@ name: GH Actions CICD
 env:
   GOOGLE_PROJECT_ID: "{{ secrets.PROJECT_ID }}"
   PROJECT_ID: $GOOGLE_PROJECT_ID
+  GH_ACTN_OIDC_SA: "{{ secrets.GH_ACTN_OIDC_SA }}"
   REGION: us-central1
   APP_WORKING_DIRECTORY: web/job-tracker
   ROOT_PATH: ../..
@@ -50,7 +51,7 @@ jobs:
       uses: google-github-actions/auth@v0
       with:
         workload_identity_provider: "{{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}"
-        service_account: "{{ secrets.GH_ACTN_OIDC_SA }}"
+        service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # setup gcloud
     - name: "Set up Cloud SDK"
