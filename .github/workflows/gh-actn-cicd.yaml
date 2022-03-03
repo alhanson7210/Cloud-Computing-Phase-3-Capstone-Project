@@ -1,0 +1,98 @@
+name: GH Actions CICD
+
+env:
+  GOOGLE_PROJECT_ID: "{{ secrets.PROJECT_ID }}"
+  PROJECT_ID: $GOOGLE_PROJECT_ID
+  REGION: us-central1
+  APP_WORKING_DIRECTORY: web/job-tracker
+  ROOT_PATH: ../..
+  IMAGE_NAME: job-tracker
+  IMAGE: $IMAGE_NAME
+  IMAGE_URL: gcr.io/$PROJECT_ID/$IMAGE
+  SERVICE: $IMAGE-node-srv
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    # checkout out the repo
+    - uses: actions/checkout@v2
+
+    # install firebase-tools based on the detected os
+    - name: "Install firebase standalone binary"
+      run: "curl -sL firebase.tools | bash"
+
+    # simple test that firebase-tools is working
+    - name:  "Use firebase cli"
+      run: "firebase help"
+
+    # setup node for the env for Cloud Functions
+    - name: "Use Node.js ${{ matrix.node-version }}"
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # setup authentication for using gcloud
+    - id: auth
+      uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: "{{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}"
+        service_account: "{{ secrets.GH_ACTN_OIDC_SA }}"
+
+    # setup gcloud
+    - name: "Set up Cloud SDK"
+      uses: google-github-actions/setup-gcloud@v0
+
+    # simple test that gcloud is working
+    - name: "Use gcloud CLI"
+      run: gcloud info
+
+    # env var set for firebase login to work properly
+    - name: "Set the env var to the path of a JSON service account key file"
+      run:  export GOOGLE_APPLICATION_CREDENTIALS={{ steps.auth.outputs.credentials_file_path }}
+
+    # log in for the firebase sdk
+    - name: "Authenticate firebase-tools for CI login"
+      run: firebase login:ci
+
+    # configure gcloud config configurations and build env vars
+    - name: "Setting up gcloud defaults"
+      run: |
+        gcloud config set run/region $REGION
+
+    # navigate to application
+    - name: change working directory
+      run: cd $APP_WORKING_DIRECTORY
+
+    # start cloud build process
+    - name: "build cloud run instance"
+      run: gcloud builds submit --tag $IMAGE_URL
+
+    # deploy cloud run instance
+    - name: "deploy cloud run service"
+      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var GOOGLE_CLOUD_PROJECT=${GOOGLE_PROJECT_ID} --image $IMAGE_URL
+
+    # deploy cloud functions with firebase-tools 
+    # - name: "cloud functions"
+    #   run: echo "add #firebase deploy --only functions when ready"
+
+    # navigate to root of repo
+    - name: revert working directory
+      run: cd $ROOT_PATH
+
+    # marker for workflow
+    - name: "End of Deployment"
+      run: echo "successful deployment"
