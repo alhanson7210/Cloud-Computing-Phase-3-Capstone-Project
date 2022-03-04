@@ -57,7 +57,7 @@ jobs:
 
     # setup gcloud
     - name: "Set up Cloud SDK"
-      run: gcloud auth application-default login --client-id-file={{ steps.auth.outputs.credentials_file_path }} --quiet
+      run: gcloud auth login --cred-file=$GOOGLE_APPLICATION_CREDENTIALS --no-browser
 
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
