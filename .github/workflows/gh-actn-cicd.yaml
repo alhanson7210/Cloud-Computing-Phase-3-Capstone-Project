@@ -57,15 +57,13 @@ jobs:
 
     # setup gcloud
     - name: "Set up Cloud SDK"
-      uses: google-github-actions/setup-gcloud@v0
+      uses: gcloud auth application-default login --client-id-file=$GOOGLE_APPLICATION_CREDENTIALS
 
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
       run: gcloud info
 
-    # env var set for firebase login to work properly
-    - name: "Set the env var to the path of a JSON service account key file"
-      run:  export GOOGLE_APPLICATION_CREDENTIALS={{ steps.auth.outputs.credentials_file_path }}
+    # env var set for firebase login to work properly by gcloud/auth step
 
     # log in for the firebase sdk
     - name: "Authenticate firebase-tools for CI login"
