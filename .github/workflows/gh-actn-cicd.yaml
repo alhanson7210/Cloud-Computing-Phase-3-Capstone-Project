@@ -57,7 +57,7 @@ jobs:
 
     # setup gcloud
     - name: "Set up Cloud SDK"
-      run: gcloud auth login --cred-file=$GOOGLE_APPLICATION_CREDENTIALS --no-browser
+      run: gcloud auth login --cred-file=$GOOGLE_APPLICATION_CREDENTIALS
 
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
