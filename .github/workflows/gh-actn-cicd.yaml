@@ -56,8 +56,8 @@ jobs:
         service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
-    # - name: 'Set up Cloud SDK'
-    #   uses: 'google-github-actions/setup-gcloud@v0'
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
 
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
@@ -75,7 +75,8 @@ jobs:
          #PID: ${{ steps.auth.outputs.project_id }}
          PID: $PROJECT_ID
       run: |
-        gcloud config set project $GOOGLE_PROJECT_ID
+        # maybe this isn't needed since it's overridden by WARNING: Property [project] is overridden by environment setting [CLOUDSDK_CORE_PROJECT=${PROJECT_ID}]:
+        # gcloud config set project $GOOGLE_PROJECT_ID
         gcloud config set run/region $REGION
 
     # navigate to application
