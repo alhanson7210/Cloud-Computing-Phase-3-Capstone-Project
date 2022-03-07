@@ -87,7 +87,7 @@ jobs:
       env:
         IAK: "{{ secrets.IDP_API_KEY }}"
         IAD: "{{ secrets.IDP_AUTH_DOMAIN }}"
-      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var GOOGLE_CLOUD_PROJECT=${GOOGLE_PROJECT_ID}, IDP_API_KEY=$IAK, IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
+      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=${GOOGLE_PROJECT_ID}, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
 
     # deploy cloud functions with firebase-tools 
     # - name: "cloud functions"
