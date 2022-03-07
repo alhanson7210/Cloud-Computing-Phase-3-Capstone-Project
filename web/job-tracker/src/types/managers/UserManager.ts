@@ -1,7 +1,8 @@
-import { UserData } from "../formats/types";
+import { JobEvent, UserData } from "../formats/types";
 
 export class Manager {
   ActiveUser: UserData;
+  localJobViews: JobEvent[];
 
   constructor() {
     this.ActiveUser = {
@@ -9,6 +10,7 @@ export class Manager {
       displayName: null,
       email: null
     };
+    this.localJobViews = [];
   }
 
   setActiveUser(name:string|null, email:string|null) {
@@ -25,6 +27,14 @@ export class Manager {
       displayName: null,
       email: null
     }; 
+  }
+
+  createJobEvent(position:string) {
+    //<update to post call to cloud function in the future>
+  }
+
+  getJobEvents() {
+    //<update to fetch call to cloud function>
   }
 }
 

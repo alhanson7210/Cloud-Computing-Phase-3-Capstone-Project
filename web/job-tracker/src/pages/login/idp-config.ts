@@ -1,8 +1,8 @@
-const { IDP_API_KEY, IDP_AUTH_DOMAIN } = process.env;
+const { REACT_APP_IDP_API_KEY, REACT_APP_IDP_AUTH_DOMAIN } = process.env;
 
 const config = {
-  apiKey: `${ IDP_API_KEY }`,
-  authDomain: `${ IDP_AUTH_DOMAIN }`
+  apiKey: `${ REACT_APP_IDP_API_KEY }`,
+  authDomain: `${ REACT_APP_IDP_AUTH_DOMAIN }`
 };
 
 export default config;
