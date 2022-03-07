@@ -1,7 +1,7 @@
 import React, { FormEventHandler } from "react";
-import UserManager from "../../../types/managers/UserManager";
+import UserManager from "../../../../../types/managers/UserManager";
 
-const DashboardJobEventsForm: React.FC = () => {
+const DashboardJobEventForm: React.FC = () => {
     const CreateJobEvent: FormEventHandler<HTMLFormElement> = (event) => {
         event.preventDefault()
         const form: HTMLFormElement | null = document.forms.namedItem('job-event-form')
@@ -39,4 +39,4 @@ const DashboardJobEventsForm: React.FC = () => {
     )
 }
 
-export default DashboardJobEventsForm;
+export default DashboardJobEventForm;

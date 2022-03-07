@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { JobEvent, ObserverProps } from "../../../types/formats/types";
-import UserManager from "../../../types/managers/UserManager";
+import { ObserverProps, JobEvent } from "../../../../../types/formats/types";
+import UserManager from "../../../../../types/managers/UserManager";
+
 
 const DashboardJobViewObserver: React.FC<ObserverProps> = (props) => {
     const [jobViews, setJobViews] = useState<JobEvent[]>([]);
@@ -28,7 +29,7 @@ const DashboardJobViewObserver: React.FC<ObserverProps> = (props) => {
             { props.retrieveView() && !viewsArePresent && !UserManager.localJobViews.length && 
                 <div>There are no job views to see yet {UserManager.ActiveUser.displayName}. </div>
             }
-            {  props.retrieveView() && !viewsArePresent && UserManager.localJobViews.length && 
+            {  props.retrieveView() && !viewsArePresent && UserManager.localJobViews.length !== 0 && 
                 <div className="is-clipped">
                     <div>
                         { 

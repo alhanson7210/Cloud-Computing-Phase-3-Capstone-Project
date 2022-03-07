@@ -1,3 +1,5 @@
+import React from "react";
+
 interface UserData {
     hasActiveUser: boolean;
     displayName: string | null;
@@ -17,4 +19,9 @@ interface ObserverProps {
     retrieveView(): boolean; 
 }
 
-export type { UserData, JobEvent, ObserverProps };
+interface DashboardColumnObjectProps {
+    leftPanel: React.ReactElement;
+    rightPanel: React.ReactElement;
+}
+
+export type { UserData, JobEvent, ObserverProps, DashboardColumnObjectProps };
