@@ -1,7 +1,7 @@
 name: GH Actions CICD
 
 env:
-  GOOGLE_PROJECT_ID: "{{ secrets.PROJECT_ID }}"
+  GOOGLE_PROJECT_ID: "${{ env.GCP_PROJECT_ID }}"
   PROJECT_ID: $GOOGLE_PROJECT_ID
   GH_ACTN_OIDC_POOL: "{{ secrets.GH_ACTN_OIDC_POOL }}"
   GH_ACTN_OIDC_PROVIDER: "{{ secrets.GH_ACTN_OIDC_PROVIDER }}"
@@ -72,7 +72,7 @@ jobs:
     # configure gcloud config configurations and build env vars
     - name: "Setting up gcloud defaults"
       run: |
-        gcloud config set project $GOOGLE_PROJECT_ID
+        gcloud config set project $PROJECT_ID
         gcloud config set run/region $REGION
 
     # navigate to application
