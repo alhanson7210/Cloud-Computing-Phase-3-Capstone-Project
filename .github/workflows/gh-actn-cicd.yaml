@@ -72,10 +72,10 @@ jobs:
     # configure gcloud config configurations and build env vars
     - name: "Setting up gcloud defaults"
       env:
-         # ${{ steps.auth.outputs.project_id }}
+         #PID: ${{ steps.auth.outputs.project_id }}
          PID: $PROJECT_ID
       run: |
-        gcloud config set project $PID
+        gcloud config set project $GOOGLE_PROJECT_ID
         gcloud config set run/region $REGION
 
     # navigate to application
