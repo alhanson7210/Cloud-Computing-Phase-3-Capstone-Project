@@ -1,11 +1,11 @@
 name: GH Actions CICD
 
 env:
-  GOOGLE_PROJECT_ID: "${{ secrets.PROJECT_ID }}"
+  GOOGLE_PROJECT_ID: ${{ secrets.PROJECT_ID }}
   PROJECT_ID: $GOOGLE_PROJECT_ID
-  GH_ACTN_OIDC_POOL: "{{ secrets.GH_ACTN_OIDC_POOL }}"
-  GH_ACTN_OIDC_PROVIDER: "{{ secrets.GH_ACTN_OIDC_PROVIDER }}"
-  GH_ACTN_OIDC_SA: "{{ secrets.GH_ACTN_OIDC_SA }}"
+  GH_ACTN_OIDC_POOL: ${{ secrets.GH_ACTN_OIDC_POOL }}
+  GH_ACTN_OIDC_PROVIDER: ${{ secrets.GH_ACTN_OIDC_PROVIDER }}
+  GH_ACTN_OIDC_SA: ${{ secrets.GH_ACTN_OIDC_SA }}
   REGION: us-central1
   APP_WORKING_DIRECTORY: web/job-tracker
   ROOT_PATH: ../..
@@ -72,7 +72,7 @@ jobs:
     # configure gcloud config configurations and build env vars
     - name: "Setting up gcloud defaults"
       env:
-         PID: "{{ steps.auth.outputs.project_id }}"
+         PID: ${{ steps.auth.outputs.project_id }}
       run: |
         gcloud config set project $PID
         gcloud config set run/region $REGION
@@ -88,9 +88,9 @@ jobs:
     # deploy cloud run instance
     - name: "deploy cloud run service"
       env:
-        IAK: "{{ secrets.IDP_API_KEY }}"
-        IAD: "{{ secrets.IDP_AUTH_DOMAIN }}"
-      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=${GOOGLE_PROJECT_ID}, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
+        IAK: ${{ secrets.IDP_API_KEY }}
+        IAD: ${{ secrets.IDP_AUTH_DOMAIN }}
+      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
 
     # deploy cloud functions with firebase-tools 
     # - name: "cloud functions"
