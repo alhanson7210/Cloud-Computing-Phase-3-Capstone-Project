@@ -75,8 +75,7 @@ jobs:
          #PID: ${{ steps.auth.outputs.project_id }}
          PID: $PROJECT_ID
       run: |
-        # maybe this isn't needed since it's overridden by WARNING: Property [project] is overridden by environment setting [CLOUDSDK_CORE_PROJECT=${PROJECT_ID}]:
-        # gcloud config set project $GOOGLE_PROJECT_ID
+        gcloud config set core/project $GOOGLE_PROJECT_ID
         gcloud config set run/region $REGION
 
     # navigate to application
