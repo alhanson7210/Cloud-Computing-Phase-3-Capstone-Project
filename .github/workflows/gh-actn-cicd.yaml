@@ -73,7 +73,7 @@ jobs:
     - name: "Setting up gcloud defaults"
       env:
          # ${{ steps.auth.outputs.project_id }}
-         PID: ${{ env.GCP_PROJECT_ID }}
+         PID: $PROJECT_ID
       run: |
         gcloud config set project $PID
         gcloud config set run/region $REGION
