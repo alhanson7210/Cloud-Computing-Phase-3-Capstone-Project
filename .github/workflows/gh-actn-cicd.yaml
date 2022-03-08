@@ -58,10 +58,6 @@ jobs:
       with:
         workload_identity_provider: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
         service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
-        token_format: "access_token"
-        id_token_audience: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
-        create_credentials_file: true
-        delegates: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
     - name: 'Set up Cloud SDK'
