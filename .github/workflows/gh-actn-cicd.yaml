@@ -79,15 +79,15 @@ jobs:
       run: |
         gcloud config set run/region $REGION
         gcloud config set account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+        gcloud auth configure-docker gcr.io
 
     # start cloud build process
     # edited service account
     - name: "build cloud run instance"
       run: |
         # navigate to application
-        cd $APP_WORKING_DIRECTORY
-        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-        gcloud builds submit --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+        cd $APP_WORKING_DIRECTORY 
+        gcloud builds submit --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --region us-central1
         cd $ROOT_PATH
 
     # deploy cloud run instance
