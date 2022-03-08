@@ -84,7 +84,9 @@ jobs:
 
     # start cloud build process
     - name: "build cloud run instance"
-      run: gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+      run: |
+        ls
+        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
 
     # deploy cloud run instance
     - name: "deploy cloud run service"
