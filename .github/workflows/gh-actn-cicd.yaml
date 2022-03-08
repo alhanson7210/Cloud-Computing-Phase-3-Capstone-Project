@@ -78,14 +78,11 @@ jobs:
         #gcloud config set core/project $GOOGLE_PROJECT_ID
         gcloud config set run/region $REGION
 
-    # navigate to application
-    - name: change working directory
-      run: cd $APP_WORKING_DIRECTORY
-
     # start cloud build process
     - name: "build cloud run instance"
       run: |
-        ls
+        # navigate to application
+        cd $APP_WORKING_DIRECTORY
         gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
 
     # deploy cloud run instance
