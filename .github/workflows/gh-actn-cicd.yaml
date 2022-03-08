@@ -21,8 +21,10 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+
     environment:
       name: PID
+
     # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
@@ -56,28 +58,21 @@ jobs:
       with:
         workload_identity_provider: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
         service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+        token_format: "access_token"
+        id_token_audience: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
+        create_credentials_file: true
+        delegates: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
-    # - name: 'Set up Cloud SDK'
-    #   uses: 'google-github-actions/setup-gcloud@v0'
-    - id: 'gcloud'
-      name: 'gcloud'
-      env:
-        IAK: ${{ secrets.IDP_API_KEY }}
-        IAD: ${{ secrets.IDP_AUTH_DOMAIN }}
-      run: |-
-        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-        gcloud config set run/region $REGION
-        # gcloud config set account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
-        cd $APP_WORKING_DIRECTORY
-        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --worker-pool ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
-        gcloud run deploy ${SERVICE} --project $GOOGLE_PROJECT_ID --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
-        cd $ROOT_PATH
-
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+    # - id: 'gcloud'
+    #   name: 'gcloud'
+    #   run: gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
 
     # simple test that gcloud is working
-    # - name: "Use gcloud CLI"
-    #   run: gcloud info
+    - name: "Use gcloud CLI"
+      run: gcloud info
 
     # env var set for firebase login to work properly by gcloud/auth step
 
@@ -86,28 +81,25 @@ jobs:
     #   run: firebase login:ci
 
     # configure gcloud config configurations and build env vars
-    # - name: "Setting up gcloud defaults"
-    #   env:
-    #      #PID: ${{ steps.auth.outputs.project_id }}
-    #      PID: $PROJECT_ID
-    #   run: |
-    #     #gcloud config set core/project $GOOGLE_PROJECT_ID
-    #     gcloud config set run/region $REGION
+    - name: "Setting up gcloud defaults"
+      run: |
+        gcloud config set run/region $REGION
 
     # start cloud build process
     # edited service account
-    # - name: "build cloud run instance"
-    #   run: |
-    #     # navigate to application
-    #     cd $APP_WORKING_DIRECTORY
-    #     gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+    - name: "build cloud run instance"
+      run: |
+        # navigate to application
+        cd $APP_WORKING_DIRECTORY
+        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+        cd $ROOT_PATH
 
     # deploy cloud run instance
-    # - name: "deploy cloud run service"
-    #   env:
-    #     IAK: ${{ secrets.IDP_API_KEY }}
-    #     IAD: ${{ secrets.IDP_AUTH_DOMAIN }}
-    #   run: gcloud run deploy ${SERVICE} --project $GOOGLE_PROJECT_ID --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
+    - name: "deploy cloud run service"
+      env:
+        IAK: ${{ secrets.IDP_API_KEY }}
+        IAD: ${{ secrets.IDP_AUTH_DOMAIN }}
+      run: gcloud run deploy ${SERVICE} --project $GOOGLE_PROJECT_ID --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
 
     # deploy cloud functions with firebase-tools 
     # - name: "cloud functions"
