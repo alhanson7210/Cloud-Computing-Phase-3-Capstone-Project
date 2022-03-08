@@ -68,8 +68,9 @@ jobs:
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
         gcloud config set run/region $REGION
+        # gcloud config set account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
         cd $APP_WORKING_DIRECTORY
-        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --worker-pool ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
         gcloud run deploy ${SERVICE} --project $GOOGLE_PROJECT_ID --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
         cd $ROOT_PATH
 
