@@ -86,6 +86,7 @@ jobs:
       run: |
         # navigate to application
         cd $APP_WORKING_DIRECTORY
+        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
         gcloud builds submit --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
         cd $ROOT_PATH
 
