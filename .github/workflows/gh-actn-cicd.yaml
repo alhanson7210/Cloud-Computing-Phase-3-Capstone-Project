@@ -86,7 +86,7 @@ jobs:
       run: |
         # navigate to application
         cd $APP_WORKING_DIRECTORY
-        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
+        gcloud builds submit --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID
         cd $ROOT_PATH
 
     # deploy cloud run instance
