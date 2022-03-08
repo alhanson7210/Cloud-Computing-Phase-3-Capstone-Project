@@ -79,7 +79,7 @@ jobs:
         gcloud config set run/region $REGION
 
     # start cloud build process
-    #adding audience to GH Actions OIDC Provider
+    # edited service account
     - name: "build cloud run instance"
       run: |
         # navigate to application
