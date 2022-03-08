@@ -54,7 +54,7 @@ jobs:
     - id: auth
       uses: google-github-actions/auth@v0
       with:
-        workload_identity_provider: "projects/268027634297/locations/global/workloadIdentityPools/$GH_ACTN_OIDC_POOL/providers/$GH_ACTN_OIDC_PROVIDER"
+        workload_identity_provider: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
         service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
