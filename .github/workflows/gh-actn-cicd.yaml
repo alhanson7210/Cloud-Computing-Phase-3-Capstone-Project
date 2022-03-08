@@ -7,8 +7,8 @@ env:
   GH_ACTN_OIDC_PROVIDER: ${{ secrets.GH_ACTN_OIDC_PROVIDER }}
   GH_ACTN_OIDC_SA: ${{ secrets.GH_ACTN_OIDC_SA }}
   REGION: us-central1
-  APP_WORKING_DIRECTORY: web/job-tracker
-  ROOT_PATH: ../..
+  APP_WORKING_DIRECTORY: web/job-tracker/
+  ROOT_PATH: ../../
   IMAGE_NAME: job-tracker
   IMAGE: $IMAGE_NAME
   IMAGE_URL: gcr.io/$PROJECT_ID/$IMAGE
