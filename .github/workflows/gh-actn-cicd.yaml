@@ -78,6 +78,7 @@ jobs:
     - name: "Setting up gcloud defaults"
       run: |
         gcloud config set run/region $REGION
+        gcloud config set account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
 
     # start cloud build process
     # edited service account
