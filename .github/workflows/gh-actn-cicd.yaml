@@ -36,7 +36,7 @@ jobs:
 
     steps:
     # checkout out the repo
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     # install firebase-tools based on the detected os
     - name: "Install firebase standalone binary"
@@ -56,14 +56,21 @@ jobs:
     - id: auth
       uses: google-github-actions/auth@v0
       with:
-        workload_identity_provider: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
-        service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+        credentials_json: ${{ secrets.GH_ACTN_SA_KEY_JSON }}
+        # workload_identity_provider: ${{ secrets.GH_ACTN_OIDC_PROVIDER_ID }}
+        # service_account: "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
 
     # setup gcloud manually
-    - id: 'gcloud'
-      name: 'gcloud'
-      run: gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-
+    # - id: 'gcloud'
+    #   name: 'gcloud'
+    #   run: |
+    #     gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+    #     gcloud auth configure-docker gcr.io
+    
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
       run: gcloud info
@@ -78,33 +85,31 @@ jobs:
     - name: "Setting up gcloud defaults"
       run: |
         gcloud config set run/region $REGION
-        gcloud config set account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
         gcloud auth configure-docker gcr.io
 
+    # navigate to root of repo
+    - name: revert working directory
+      run: cd $APP_WORKING_DIRECTORY 
+
     # start cloud build process
-    # updated service account roles
     - name: "build cloud run instance"
       run: |
-        # navigate to application
-        cd $APP_WORKING_DIRECTORY 
-        gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-        gcloud builds submit --quiet --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --region $REGION --impersonate-service-account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
-        cd $ROOT_PATH
+        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE
+
+    # navigate to root of repo
+    - name: revert working directory
+      run: cd $ROOT_PATH
 
     # deploy cloud run instance
     - name: "deploy cloud run service"
       env:
         IAK: ${{ secrets.IDP_API_KEY }}
         IAD: ${{ secrets.IDP_AUTH_DOMAIN }}
-      run: gcloud run deploy ${SERVICE} --project $GOOGLE_PROJECT_ID --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
+      run: gcloud run deploy ${SERVICE} --platform managed --max-instances=100 --allow-unauthenticated --set-env-var REACT_APP_GOOGLE_CLOUD_PROJECT=$GOOGLE_PROJECT_ID, REACT_APP_IDP_API_KEY=$IAK, REACT_APP_IDP_AUTH_DOMAIN=$IAD --image $IMAGE_URL
 
     # deploy cloud functions with firebase-tools 
     # - name: "cloud functions"
     #   run: echo "add #firebase deploy --only functions when ready"
-
-    # navigate to root of repo
-    # - name: revert working directory
-    #   run: cd $ROOT_PATH
 
     # marker for workflow
     - name: "End of Deployment"
