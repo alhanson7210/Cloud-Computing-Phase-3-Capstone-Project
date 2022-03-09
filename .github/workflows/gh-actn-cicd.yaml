@@ -82,12 +82,12 @@ jobs:
         gcloud auth configure-docker gcr.io
 
     # start cloud build process
-    # edited service account
+    # updated service account roles
     - name: "build cloud run instance"
       run: |
         # navigate to application
         cd $APP_WORKING_DIRECTORY 
-        gcloud builds submit --quiet --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --region us-central1 --impersonate-service-account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
+        gcloud builds submit --quiet --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE --project $GOOGLE_PROJECT_ID --region $REGION --impersonate-service-account "${GH_ACTN_OIDC_SA}@${PROJECT_ID}.iam.gserviceaccount.com"
         cd $ROOT_PATH
 
     # deploy cloud run instance
