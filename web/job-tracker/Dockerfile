@@ -3,7 +3,7 @@ WORKDIR /usr/src/app
 COPY package-lock.json .
 COPY package.json .
 COPY tsconfig.json .
-RUN npm install
+RUN npm ci --production
 COPY . .
 ENV REACT_APP_GOOGLE_CLOUD_PROJECT "not-set"
 ENV REACT_APP_IDP_API_KEY "not-set"
