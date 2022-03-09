@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: job-tracker
   IMAGE: $IMAGE_NAME
   IMAGE_URL: gcr.io/$PROJECT_ID/$IMAGE
-  SERVICE: ${IMAGE_NAME}-node-srv
+  SERVICE: job-tracker-node-srv
   PROJECT_NUMBER: 268027634297
 
 on:
