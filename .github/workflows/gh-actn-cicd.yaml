@@ -64,7 +64,7 @@ jobs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v0'
 
-    # setup gcloud manually
+    # setup gcloud manually optional
     # - id: 'gcloud'
     #   name: 'gcloud'
     #   run: |
@@ -75,21 +75,11 @@ jobs:
     - name: "Use gcloud CLI"
       run: gcloud info
 
-    # env var set for firebase login to work properly by gcloud/auth step
-
-    # logging in for the firebase sdk with this command still errors out
-    # - name: "Authenticate firebase-tools for CI login"
-    #   run: firebase login:ci
-
     # configure gcloud config configurations and build env vars
     - name: "Setting up gcloud defaults"
       run: |
         gcloud config set run/region $REGION
         gcloud auth configure-docker gcr.io
-
-    # navigate to root of repo
-    # - name: navigate to app working directory
-    #   run: cd $APP_WORKING_DIRECTORY 
 
     # start cloud build process
     - name: "build cloud run instance"
@@ -100,10 +90,6 @@ jobs:
         gcloud builds submit --tag gcr.io/$GCP_PROJECT/$IMAGE_NAME
         # navigate to root of repo
         cd $ROOT_PATH
-
-    # navigate to root of repo
-    # - name: revert working directory
-    #   run: cd $ROOT_PATH
 
     # deploy cloud run instance
     - name: "deploy cloud run service"
