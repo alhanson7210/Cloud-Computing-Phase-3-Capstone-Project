@@ -77,9 +77,9 @@ jobs:
 
     # env var set for firebase login to work properly by gcloud/auth step
 
-    # log in for the firebase sdk
-    - name: "Authenticate firebase-tools for CI login"
-      run: firebase login:ci
+    # logging in for the firebase sdk with this command still errors out
+    # - name: "Authenticate firebase-tools for CI login"
+    #   run: firebase login:ci
 
     # configure gcloud config configurations and build env vars
     - name: "Setting up gcloud defaults"
