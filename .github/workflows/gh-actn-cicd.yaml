@@ -70,7 +70,7 @@ jobs:
     #   run: |
     #     gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
     #     gcloud auth configure-docker gcr.io
-    
+
     # simple test that gcloud is working
     - name: "Use gcloud CLI"
       run: gcloud info
@@ -88,13 +88,13 @@ jobs:
         gcloud auth configure-docker gcr.io
 
     # navigate to root of repo
-    - name: revert working directory
+    - name: navigate to app working directory
       run: cd $APP_WORKING_DIRECTORY 
 
     # start cloud build process
     - name: "build cloud run instance"
       run: |
-        gcloud builds submit . --tag gcr.io/$GOOGLE_PROJECT_ID/$IMAGE
+        gcloud builds submit --tag gcr.io/$GCP_PROJECT/$IMAGE_NAME
 
     # navigate to root of repo
     - name: revert working directory
