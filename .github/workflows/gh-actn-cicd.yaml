@@ -87,7 +87,7 @@ jobs:
         # navigate to app working directory 
         cd $APP_WORKING_DIRECTORY 
         # build container image and pust to gcr.io
-        gcloud builds submit --tag gcr.io/$GCP_PROJECT/$IMAGE_NAME --quiet --no-user-output-enabled
+        gcloud builds submit --tag gcr.io/$GCP_PROJECT/$IMAGE_NAME --quiet --no-user-output-enabled --suppress-logs
         # navigate to root of repo
         cd $ROOT_PATH 
 
